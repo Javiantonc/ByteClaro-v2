@@ -13,7 +13,7 @@ function renderProducts(products){
  resultsBox.innerHTML=products.map(product=>{
   const title=safeText(product.title||"Producto sin nombre");
   const store=safeText(product.store?.name||"Tienda no especificada");
-  const amount=Number(product.price?.amount);
+  const amount=product.price?.amount===null||product.price?.amount===undefined?NaN:Number(product.price.amount);
   const price=Number.isFinite(amount)&&amount>=0?euro.format(amount):"Precio no disponible";
   const shipping=product.shipping_cost?safeText(product.shipping_cost):"Gastos de envío no indicados";
   const availability=product.availability==="in_stock"?"Disponible según la fuente":product.availability?safeText(product.availability):"Disponibilidad no indicada";
@@ -25,7 +25,7 @@ function renderProducts(products){
   const link=buy!=="#"?`<a class="offer-link" href="${buy}" target="_blank" rel="noopener noreferrer sponsored">Ver oferta ↗</a>`:"<span class=\"small\">Enlace de oferta no disponible</span>";
   return `<article class="offer-card"><div class="offer-image">${img}</div><div class="offer-info"><h3>${title}</h3><p class="offer-store">${store}</p><p class="offer-meta">${safeText(shipping)} · ${availability}</p><p class="offer-updated">${safeText(updatedText)}</p></div><div class="offer-price"><strong>${price}</strong>${link}</div></article>`;
  }).join("");
- const prices=products.map(p=>Number(p.price?.amount)).filter(n=>Number.isFinite(n)&&n>=0);
+ const prices=products.map(p=>p.price?.amount===null||p.price?.amount===undefined?NaN:Number(p.price.amount)).filter(n=>Number.isFinite(n)&&n>=0);
  statusBox.textContent=`Se han encontrado ${products.length} oferta(s)${prices.length?" · precio más bajo: "+euro.format(Math.min(...prices)):""}.`;
 }
 form.addEventListener("submit",async event=>{
